@@ -1,0 +1,1 @@
+-- Legacy placeholder. The executable migration source now lives in `002_business.ts`.

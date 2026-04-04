@@ -1,0 +1,1 @@
+-- Legacy placeholder. The executable migration source now lives in `001_base.ts`.
