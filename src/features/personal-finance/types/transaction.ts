@@ -1,4 +1,5 @@
 import type { BaseEntity, OwnedEntity } from '@/src/types/common';
+import type { BudgetRole } from './budget';
 
 export type TransactionKind = 'income' | 'expense';
 
@@ -25,6 +26,8 @@ export interface CreateTransactionInput extends OwnedEntity {
   currency_code?: string;
   occurred_at: string;
   note?: string;
+  reference_type?: string | null;
+  reference_local_id?: string | null;
 }
 
 export type TransactionRecord = Transaction;
@@ -32,4 +35,8 @@ export type TransactionRecord = Transaction;
 export interface TransactionListItem extends Transaction {
   wallet_name: string;
   category_name: string | null;
+}
+
+export interface BudgetTransactionListItem extends TransactionListItem {
+  category_budget_role: BudgetRole | null;
 }

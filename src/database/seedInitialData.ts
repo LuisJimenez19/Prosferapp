@@ -1,5 +1,6 @@
 import { nowIsoString } from '@/src/lib/dates';
 import { generateLocalId } from '@/src/lib/ids';
+import { DEFAULT_CURRENCY_CODE } from "@/src/i18n/config";
 import { execute, getFirst, withTransaction } from './queries';
 import { SYNC_STATUS } from '@/src/types/common';
 
@@ -9,18 +10,60 @@ const ACTIVE_USER_SETTING_KEY = 'active_user_local_id';
 const ACTIVE_PROFILE_SETTING_KEY = 'active_personal_profile_local_id';
 
 const DEFAULT_CATEGORIES = [
-  { name: 'Salary', category_kind: 'income' },
-  { name: 'Other income', category_kind: 'income' },
-  { name: 'Food', category_kind: 'expense' },
-  { name: 'Transport', category_kind: 'expense' },
-  { name: 'Health', category_kind: 'expense' },
-  { name: 'Entertainment', category_kind: 'expense' },
-  { name: 'Misc', category_kind: 'expense' },
+  {
+    name: 'Sueldo',
+    category_kind: 'income',
+    budget_role: 'income',
+    is_essential: 0,
+    is_system: 0,
+  },
+  {
+    name: 'Otros ingresos',
+    category_kind: 'income',
+    budget_role: 'income',
+    is_essential: 0,
+    is_system: 0,
+  },
+  {
+    name: 'Comida',
+    category_kind: 'expense',
+    budget_role: 'essential',
+    is_essential: 1,
+    is_system: 1,
+  },
+  {
+    name: 'Transporte',
+    category_kind: 'expense',
+    budget_role: 'essential',
+    is_essential: 1,
+    is_system: 1,
+  },
+  {
+    name: 'Salud',
+    category_kind: 'expense',
+    budget_role: 'essential',
+    is_essential: 1,
+    is_system: 1,
+  },
+  {
+    name: 'Entretenimiento',
+    category_kind: 'expense',
+    budget_role: 'flexible',
+    is_essential: 0,
+    is_system: 0,
+  },
+  {
+    name: 'Varios',
+    category_kind: 'expense',
+    budget_role: 'flexible',
+    is_essential: 0,
+    is_system: 0,
+  },
 ] as const;
 
 const DEFAULT_WALLETS = [
-  { name: 'Cash', wallet_type: 'cash', is_default: 1 },
-  { name: 'Bank', wallet_type: 'bank', is_default: 0 },
+  { name: 'Efectivo', wallet_type: 'cash', is_default: 1 },
+  { name: 'Banco', wallet_type: 'bank', is_default: 0 },
 ] as const;
 
 async function hasInitialSeed() {
@@ -88,7 +131,7 @@ export async function seedInitialData() {
         null,
         null,
         'Local User',
-        'USD',
+        DEFAULT_CURRENCY_CODE,
         null,
         SYNC_STATUS.PENDING,
         1,
@@ -171,7 +214,7 @@ export async function seedInitialData() {
           profileLocalId,
           wallet.name,
           wallet.wallet_type,
-          'USD',
+          DEFAULT_CURRENCY_CODE,
           0,
           0,
           wallet.is_default,
@@ -210,13 +253,18 @@ export async function seedInitialData() {
             category_kind,
             color_hex,
             icon_name,
+            budget_role,
+            is_essential,
+            is_system,
+            default_goal_local_id,
+            default_debt_local_id,
             sync_status,
             version,
             created_at,
             updated_at,
             deleted_at
           )
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `,
         [
           generateLocalId('category'),
@@ -227,8 +275,13 @@ export async function seedInitialData() {
           category.name,
           category.category_kind,
           null,
-          null,
-          SYNC_STATUS.PENDING,
+            null,
+            category.budget_role,
+            category.is_essential,
+            category.is_system,
+            null,
+            null,
+            SYNC_STATUS.PENDING,
           1,
           timestamp,
           timestamp,

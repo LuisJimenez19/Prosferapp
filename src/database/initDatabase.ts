@@ -1,4 +1,4 @@
-import { getDatabase } from './client';
+import { deleteDatabase, getDatabase } from './client';
 import { runMigrations } from './runMigrations';
 import { seedInitialData } from './seedInitialData';
 
@@ -14,4 +14,10 @@ export async function initDatabase() {
   }
 
   return initializationPromise;
+}
+
+export async function resetDatabase() {
+  initializationPromise = null;
+  await deleteDatabase();
+  await initDatabase();
 }

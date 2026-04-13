@@ -1,28 +1,12 @@
-import { StyleSheet } from 'react-native';
-
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { EmptyState, Screen } from '@/src/components/ui';
 
 export default function TabTwoScreen() {
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title">More coming soon</ThemedText>
-      <ThemedText style={styles.text}>
-        This route is hidden from the tab bar for now while MVP 1 focuses on basic personal finance
-        tracking.
-      </ThemedText>
-    </ThemedView>
+    <Screen contentClassName="flex-1 justify-center">
+      <EmptyState
+        title="More coming soon"
+        description="This route stays hidden for now while the first MVP focuses on personal finance tracking."
+      />
+    </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 24,
-    justifyContent: 'center',
-    gap: 12,
-  },
-  text: {
-    opacity: 0.8,
-  },
-});

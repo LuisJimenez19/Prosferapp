@@ -1,4 +1,5 @@
 import type { MigrationDefinition } from '@/src/types/database';
+import { DEFAULT_CURRENCY_CODE } from "@/src/i18n/config";
 import { SYNC_STATUS } from '@/src/types/common';
 
 export const migration001Base: MigrationDefinition = {
@@ -17,7 +18,7 @@ CREATE TABLE IF NOT EXISTS users (
   email TEXT,
   phone TEXT,
   display_name TEXT NOT NULL,
-  preferred_currency TEXT NOT NULL DEFAULT 'USD',
+  preferred_currency TEXT NOT NULL DEFAULT '${DEFAULT_CURRENCY_CODE}',
   timezone TEXT,
   sync_status TEXT NOT NULL DEFAULT '${SYNC_STATUS.PENDING}',
   version INTEGER NOT NULL DEFAULT 1,

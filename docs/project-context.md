@@ -1,305 +1,134 @@
-# Project Context — Personal Finance + Business Management App
-
-## Project summary
-
-This project is a mobile application built with React Native and Expo.
-
-Its main purpose is to help people manage:
-
-* personal finances
-* budgets
-* savings goals
-* one or many small businesses
-
-The product is **offline-first**.
-The mobile app must work correctly without internet connection.
-Local persistence is a critical part of the architecture, not an optional enhancement.
-
-The backend will exist to support:
-
-* sync
-* backups
-* multi-device support
-* advanced reports
-* future ecosystem features
-
-The backend is **not** the primary source of truth during local operation.
-The device stores data locally first and syncs later.
-
+---
+title: Contexto general del proyecto
+status: active
+owner: product-engineering
+last_updated: 2026-04-09
+tags: [product, architecture, stack, domains]
+summary: Resume el contexto del producto, el stack actual del repo y la separacion por dominios con la que debe crecer ProsferApp.
 ---
 
-## Product vision
+# Contexto general del proyecto
+
+## Resumen
+
+ProsferApp es una aplicacion mobile construida con React Native y Expo que empieza por finanzas personales, pero se diseña desde el inicio para crecer hacia gestion de negocio, inventario y funciones de ecosistema.
+
+En el MVP 1, la propuesta concreta no es solo registrar movimientos: es generar y monitorear un plan mensual personal.
+
+La idea central es simple:
+
+- el dispositivo trabaja localmente primero
+- SQLite sostiene la operacion local
+- la nube llegara despues para sync, backup, multi-dispositivo y funciones ampliadas
+
+## Estado actual del repo
+
+### Stack implementado hoy
+
+- React Native
+- Expo SDK 54
+- TypeScript
+- Expo Router
+- NativeWind
+- Expo SQLite
+- i18n con `i18next` y `react-i18next`
+
+### Stack planificado para etapas futuras
+
+- persistencia cloud en MongoDB Atlas
+- capa de sync y reconciliacion
+- servicios backend en un repositorio o modulo separado cuando corresponda
+- notificaciones y mas integraciones
+
+Importante:
+
+- MongoDB Atlas esta decidido como direccion de nube.
+- El backend concreto todavia no forma parte de este repo.
+- No debemos documentar tecnologia futura como si ya estuviera implementada.
+
+## Principios de arquitectura
+
+- Offline-first.
+- Escritura local primero, sync despues.
+- Separacion clara entre finanzas, operacion comercial e inventario.
+- Modelo de ownership reutilizable para `personal` y `business`.
+- Crecimiento modular por dominio, no por pantallas aisladas.
+
+## Dominios principales
+
+- `personal-finance`
+- `settings`
+- `businesses` en preparacion
+- `sales` en preparacion
+- `purchases` en preparacion
+- `inventory` en preparacion
+- `sync` como capacidad transversal futura
+- `fidelizacion` y ecosistema como etapa posterior
+
+## Mapa de capas
+
+La app debe mantenerse en capas simples:
+
+1. `app/`
+   Define rutas y composicion de navegacion.
+2. `src/features/<feature>/screens`
+   Orquesta la experiencia de una pantalla.
+3. `src/features/<feature>/components`
+   Reutiliza piezas visuales del dominio.
+4. `src/features/<feature>/services`
+   Encapsula reglas de formulario, transformaciones y logica de aplicacion.
+5. `src/features/<feature>/repositories`
+   Contiene acceso a datos y SQL del dominio.
+6. `src/database`
+   Infraestructura SQLite, queries compartidas, migraciones y seed.
+7. `src/components/ui`
+   Primitivas visuales reutilizables.
+8. `src/lib`
+   Helpers transversales puros.
+
+## Estructura actual relevante
+
+```text
+app/
+docs/
+src/
+  components/ui/
+  database/
+    schema/
+  features/
+    personal-finance/
+    settings/
+  i18n/
+  lib/
+  types/
+```
+
+## Regla de separacion por dominio
+
+- `transactions` representan movimientos financieros ejecutados.
+- `budgets`, `debts` y `goals` representan planificacion personal.
+- `sales` y `purchases` representan operaciones comerciales.
+- `stock_movements` representan cambios de inventario.
 
-This is not only a personal finance app.
+Aunque estos dominios se relacionen, no deben colapsarse en una sola entidad gigante.
 
-It is a modular platform that starts with:
+## Preparado para el crecimiento
 
-* incomes
-* expenses
-* wallets
-* budgets
-* goals
+La base ya contempla:
 
-Then scales into:
+- migraciones por etapas
+- tablas reservadas para negocio e inventario
+- metadata de sync compartida
+- ownership comun
+- carpeta `docs/` estructurada para soportar RAG y decisiones futuras
 
-* businesses
-* sales
-* purchases
-* products
-* services
-* stock
-* reports
+## Fuera de alcance por ahora
 
-And later into:
+Mientras el foco siga siendo MVP 1, no se debe introducir como centro del desarrollo:
 
-* gamification
-* loyalty between businesses
-* cross-business rewards
-* merchant network features
-
----
-
-## Architecture principles
-
-### 1. Offline-first
-
-All important actions must be able to work offline.
-
-### 2. Local-first data flow
-
-The app writes locally first, then syncs.
-
-### 3. Clear domain separation
-
-Do not mix:
-
-* financial transactions
-* business operations
-* inventory movement
-
-### 4. Reusable data model
-
-Avoid duplicated models for personal and business contexts.
-
-### 5. Modular growth
-
-The project must be organized by domain so MVP 1, MVP 2 and MVP 3 can evolve without large rewrites.
-
----
-
-## Main product domains
-
-* auth
-* user
-* personal-finance
-* businesses
-* sales
-* purchases
-* inventory
-* reports
-* sync
-* settings
-* gamification (future)
-* loyalty (future)
-
----
-
-## MVP definition
-
-### MVP 1
-
-Personal finance:
-
-* user
-* personal profile
-* wallets
-* categories
-* transactions
-* budgets
-* budget categories
-* goals
-* goal contributions
-* app settings
-* sync queue
-
-### MVP 2
-
-Business management:
-
-* businesses
-* customers
-* suppliers
-* products
-* services
-* sales
-* sale items
-* purchases
-* purchase items
-
-### MVP 3
-
-Inventory:
-
-* inventory items
-* stock movements
-
----
-
-## Data model rules
-
-### Shared sync columns
-
-Most local entities use:
-
-* local_id
-* server_id
-* sync_status
-* version
-* created_at
-* updated_at
-* deleted_at
-
-### owner model
-
-Many entities belong to:
-
-* personal
-* business
-
-This is represented using:
-
-* owner_type
-* owner_local_id
-
-### Important modeling decisions
-
-* use a single `transactions` table for both personal and business financial movements
-* keep `sales` separate from `transactions`
-* keep `products` and `services` separate
-* use `inventory_items` as stock snapshot
-* use `stock_movements` as stock history
-* historical rows must keep snapshots like `item_name_snapshot`
-
----
-
-## Technical stack
-
-### Mobile app
-
-* React Native
-* Expo SDK 54
-* TypeScript
-* Expo Router
-* SQLite for local database
-* SecureStore for sensitive local data
-* Zustand for local UI/app state
-* TanStack Query for server sync/query state
-
-### Backend
-
-* Node.js
-* NestJS
-* MongoDB Atlas
-
----
-
-## Coding rules
-
-### General
-
-* prefer small, focused modules
-* prefer explicit types
-* avoid premature abstractions
-* avoid hidden magic
-* prioritize readability
-
-### Data access
-
-* centralize database access helpers
-* use repositories/services per domain
-* do not scatter raw SQL everywhere
-
-### UI
-
-* keep screens simple
-* forms should be reusable
-* avoid coupling screens directly to database implementation details
-
-### Sync
-
-* design with sync in mind even if sync is not implemented yet
-* never omit sync metadata from persistent models
-
----
-
-## Folder organization preference
-
-The codebase should be organized by domain and infrastructure.
-
-Suggested top-level structure:
-
-* app
-* src
-
-  * features
-  * components
-  * database
-  * lib
-  * hooks
-  * store
-  * types
-  * constants
-
-Inside `features`, organize by domain:
-
-* auth
-* personal-finance
-* businesses
-* inventory
-* sync
-* settings
-
-Each feature should grow with:
-
-* types
-* repository
-* services
-* hooks
-* components
-
----
-
-## What Codex should avoid
-
-* do not generate backend code yet unless explicitly requested
-* do not couple everything to remote APIs
-* do not skip SQLite structure
-* do not invent new data model rules without aligning with the defined schema
-* do not optimize for web first
-* do not introduce large state libraries unless requested
-
----
-
-## Current goal
-
-Right now the focus is:
-
-1. define local project structure
-2. implement SQLite setup
-3. create local schema runner
-4. create database helpers
-5. create first repositories for MVP 1
-6. only then start building screens
-
----
-
-## Expected development order
-
-1. database foundation
-2. shared types
-3. repositories
-4. seed/basic setup
-5. first screens
-6. sync layer later
-
----
+- backend-first design
+- fidelizacion operativa
+- red comercial
+- reportes complejos
+- automatizaciones de notificaciones
+- UI avanzada antes de fijar bien el modelo de presupuesto personal

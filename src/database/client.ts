@@ -32,3 +32,8 @@ export async function closeDatabase() {
   await db.closeAsync();
   databasePromise = null;
 }
+
+export async function deleteDatabase() {
+  await closeDatabase();
+  await SQLite.deleteDatabaseAsync(DATABASE_NAME);
+}
