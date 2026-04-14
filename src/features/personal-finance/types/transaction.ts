@@ -35,8 +35,7 @@ export type TransactionRecord = Transaction;
 export interface TransactionListItem extends Transaction {
   wallet_name: string;
   category_name: string | null;
-}
-
-export interface BudgetTransactionListItem extends TransactionListItem {
   category_budget_role: BudgetRole | null;
 }
+
+export type BudgetTransactionListItem = TransactionListItem;

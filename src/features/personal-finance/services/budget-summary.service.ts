@@ -1,12 +1,17 @@
 import { getMonthDateRange, getMonthKey } from "@/src/lib/dates";
 import { budgetPreferencesRepository } from "../repositories/budget-preferences.repository";
 import { budgetRepository } from "../repositories/budget.repository";
+import { categoryRepository } from "../repositories/category.repository";
 import { debtRepository } from "../repositories/debt.repository";
 import { goalRepository } from "../repositories/goal.repository";
 import { transactionRepository } from "../repositories/transaction.repository";
 import { budgetAlertsService } from "./budget-alerts.service";
 import type {
   Budget,
+  BudgetComparisonBlock,
+  BudgetComparisonMode,
+  BudgetComparisonState,
+  EssentialBudgetBreakdownItem,
   GeneratedMonthlyBudgetSummary,
 } from "../types/budget";
 
@@ -35,6 +40,98 @@ function calculateDeviationStatus(
   return "on_track" as const;
 }
 
+function calculateComparisonState(
+  plannedAmount: number,
+  actualAmount: number,
+): BudgetComparisonState {
+  if (actualAmount === plannedAmount) {
+    return "aligned";
+  }
+
+  return actualAmount > plannedAmount ? "above" : "below";
+}
+
+function calculateProgressRatio(plannedAmount: number, actualAmount: number) {
+  if (plannedAmount <= 0) {
+    return actualAmount > 0 ? 1 : 0;
+  }
+
+  return actualAmount / plannedAmount;
+}
+
+function buildComparisonBlock(input: {
+  actual_amount: number;
+  comparison_mode: BudgetComparisonMode;
+  key: BudgetComparisonBlock["key"];
+  planned_amount: number;
+}): BudgetComparisonBlock {
+  return {
+    key: input.key,
+    comparison_mode: input.comparison_mode,
+    state: calculateComparisonState(input.planned_amount, input.actual_amount),
+    planned_amount: input.planned_amount,
+    actual_amount: input.actual_amount,
+    difference_amount: input.actual_amount - input.planned_amount,
+    progress_ratio: calculateProgressRatio(
+      input.planned_amount,
+      input.actual_amount,
+    ),
+  };
+}
+
+function buildEssentialBreakdown(input: {
+  actual_amounts_by_category: Map<string, number>;
+  planned_categories: Map<
+    string,
+    { allocated_amount: number; category_name: string }
+  >;
+}): EssentialBudgetBreakdownItem[] {
+  return Array.from(input.planned_categories.entries())
+    .map(([categoryLocalId, detail]) => {
+      const actualAmount =
+        input.actual_amounts_by_category.get(categoryLocalId) ?? 0;
+
+      return {
+        category_local_id: categoryLocalId,
+        category_name: detail.category_name,
+        allocated_amount: detail.allocated_amount,
+        actual_amount: actualAmount,
+        difference_amount: actualAmount - detail.allocated_amount,
+        progress_ratio: calculateProgressRatio(
+          detail.allocated_amount,
+          actualAmount,
+        ),
+        state: calculateComparisonState(detail.allocated_amount, actualAmount),
+      } satisfies EssentialBudgetBreakdownItem;
+    })
+    .filter(
+      (item) => item.allocated_amount > 0 || item.actual_amount > 0,
+    )
+    .sort((left, right) => {
+      const statePriority = {
+        above: 0,
+        aligned: 1,
+        below: 2,
+      } satisfies Record<BudgetComparisonState, number>;
+
+      const leftPriority = statePriority[left.state];
+      const rightPriority = statePriority[right.state];
+
+      if (leftPriority !== rightPriority) {
+        return leftPriority - rightPriority;
+      }
+
+      const deltaDifference =
+        Math.abs(right.difference_amount) - Math.abs(left.difference_amount);
+
+      if (deltaDifference !== 0) {
+        return deltaDifference;
+      }
+
+      return left.category_name.localeCompare(right.category_name);
+    });
+}
+
 export async function getMonthlyBudgetSummary(
   ownerType: string,
   ownerLocalId: string,
@@ -51,7 +148,12 @@ export async function getMonthlyBudgetSummary(
   }
 
   const range = getMonthDateRange(budget.month_key);
-  const [transactions, budgetCategoryAllocations, goalContributions] =
+  const [
+    transactions,
+    budgetCategoryAllocations,
+    essentialCategories,
+    goalContributions,
+  ] =
     await Promise.all([
       transactionRepository.listTransactionsByOwnerAndDateRange(
         ownerType,
@@ -59,7 +161,12 @@ export async function getMonthlyBudgetSummary(
         range.start_iso,
         range.end_iso,
       ),
-      budgetRepository.listBudgetCategoryAllocations(budget.local_id),
+      budgetRepository.listBudgetCategoryAllocationDetails(budget.local_id),
+      categoryRepository.listCategoriesByOwnerAndBudgetRole(
+        ownerType,
+        ownerLocalId,
+        "essential",
+      ),
       goalRepository.listGoalContributionsByMonth(
         ownerType,
         ownerLocalId,
@@ -68,9 +175,28 @@ export async function getMonthlyBudgetSummary(
       ),
     ]);
 
-  const essentialCategoryIds = new Set(
-    budgetCategoryAllocations.map((allocation) => allocation.category_local_id),
+  const essentialBreakdownMap = new Map<
+    string,
+    { allocated_amount: number; category_name: string }
+  >(
+    essentialCategories.map((category) => [
+      category.local_id,
+      {
+        allocated_amount: 0,
+        category_name: category.name,
+      },
+    ]),
   );
+
+  for (const allocation of budgetCategoryAllocations) {
+    essentialBreakdownMap.set(allocation.category_local_id, {
+      allocated_amount: allocation.allocated_amount,
+      category_name: allocation.category_name,
+    });
+  }
+
+  const essentialCategoryIds = new Set(essentialBreakdownMap.keys());
+  const actualEssentialByCategory = new Map<string, number>();
 
   let actualIncomeTotal = 0;
   let actualEssentialTotal = 0;
@@ -106,6 +232,22 @@ export async function getMonthlyBudgetSummary(
 
     if (isEssential || transaction.category_budget_role === "essential") {
       actualEssentialTotal += transaction.amount;
+      const categoryLocalId =
+        transaction.category_local_id ?? "__essential_without_category__";
+
+      actualEssentialByCategory.set(
+        categoryLocalId,
+        (actualEssentialByCategory.get(categoryLocalId) ?? 0) +
+          transaction.amount,
+      );
+
+      if (!essentialBreakdownMap.has(categoryLocalId)) {
+        essentialBreakdownMap.set(categoryLocalId, {
+          allocated_amount: 0,
+          category_name: transaction.category_name ?? "Esencial sin categoria",
+        });
+      }
+
       continue;
     }
 
@@ -133,6 +275,38 @@ export async function getMonthlyBudgetSummary(
     budget.planned_flexible_total - actualFlexibleTotal,
     0,
   );
+  const comparisonBlocks = [
+    buildComparisonBlock({
+      actual_amount: actualIncomeTotal,
+      comparison_mode: "target",
+      key: "income",
+      planned_amount: budget.planned_income_total,
+    }),
+    buildComparisonBlock({
+      actual_amount: actualEssentialTotal,
+      comparison_mode: "cap",
+      key: "essentials",
+      planned_amount: budget.planned_essential_total,
+    }),
+    buildComparisonBlock({
+      actual_amount: actualDebtTotal,
+      comparison_mode: "target",
+      key: "debts",
+      planned_amount: budget.planned_debt_total,
+    }),
+    buildComparisonBlock({
+      actual_amount: actualGoalTotal,
+      comparison_mode: "target",
+      key: "goals",
+      planned_amount: budget.planned_goal_total,
+    }),
+    buildComparisonBlock({
+      actual_amount: actualFlexibleTotal,
+      comparison_mode: "cap",
+      key: "flexible",
+      planned_amount: budget.planned_flexible_total,
+    }),
+  ];
 
   return {
     budget,
@@ -151,6 +325,7 @@ export async function getMonthlyBudgetSummary(
     buffer_total: budget.buffer_total,
     remaining_to_assign: remainingToAssign,
     remaining_flexible: remainingFlexible,
+    comparison_blocks: comparisonBlocks,
     deviation_status: calculateDeviationStatus(
       budget,
       actualEssentialTotal,
@@ -158,6 +333,10 @@ export async function getMonthlyBudgetSummary(
       actualGoalTotal,
       actualFlexibleTotal,
     ),
+    essential_breakdown: buildEssentialBreakdown({
+      actual_amounts_by_category: actualEssentialByCategory,
+      planned_categories: essentialBreakdownMap,
+    }),
   } satisfies GeneratedMonthlyBudgetSummary;
 }
 

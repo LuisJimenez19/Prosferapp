@@ -62,7 +62,10 @@ export function getWalletVisuals(
 }
 
 export function getCategoryVisuals(
-  category: Pick<Category, "category_kind" | "color_hex" | "icon_name" | "name">,
+  category: Pick<
+    Category,
+    "category_kind" | "color_hex" | "icon_name" | "name"
+  >,
   colorScheme: AppColorScheme | null | undefined = "light",
 ): VisualTone {
   const tones = getPersonalFinanceVisualTokens(colorScheme);
@@ -125,6 +128,30 @@ export function getCategoryVisuals(
     };
   }
 
+  if (
+    normalizedName.includes("servicio") ||
+    normalizedName.includes("utilities") ||
+    normalizedName.includes("internet") ||
+    normalizedName.includes("luz") ||
+    normalizedName.includes("gas")
+  ) {
+    return {
+      ...tones.brandSoft,
+      iconName: "home-repair-service",
+    };
+  }
+
+  if (
+    normalizedName.includes("entrenamiento") ||
+    normalizedName.includes("gym") ||
+    normalizedName.includes("fitness")
+  ) {
+    return {
+      ...tones.success,
+      iconName: "fitness-center",
+    };
+  }
+
   if (category.category_kind === "income") {
     return {
       ...tones.success,
@@ -146,5 +173,5 @@ export function getTransactionAmountColor(
     return getPersonalFinanceVisualTokens(colorScheme).success.iconColor;
   }
 
-  return getThemeColors(colorScheme).foreground;
+  return getThemeColors(colorScheme).destructive;
 }

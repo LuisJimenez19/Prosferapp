@@ -15,6 +15,8 @@ export type BudgetRole =
   | "ignore";
 export type IncomeReliabilityLevel = "fixed" | "variable";
 export type BudgetDeviationStatus = "on_track" | "warning" | "off_track";
+export type BudgetComparisonMode = "cap" | "target";
+export type BudgetComparisonState = "below" | "aligned" | "above";
 export type BudgetAlertKind =
   | "essential_overspend"
   | "debt_payment_risk"
@@ -134,6 +136,8 @@ export interface GeneratedMonthlyBudgetSummary {
   remaining_to_assign: number;
   remaining_flexible: number;
   deviation_status: BudgetDeviationStatus;
+  comparison_blocks: BudgetComparisonBlock[];
+  essential_breakdown: EssentialBudgetBreakdownItem[];
 }
 
 export interface BudgetAlert {
@@ -141,4 +145,24 @@ export interface BudgetAlert {
   severity: BudgetAlertSeverity;
   title: string;
   description: string;
+}
+
+export interface BudgetComparisonBlock {
+  key: "income" | "essentials" | "debts" | "goals" | "flexible";
+  comparison_mode: BudgetComparisonMode;
+  state: BudgetComparisonState;
+  planned_amount: number;
+  actual_amount: number;
+  difference_amount: number;
+  progress_ratio: number;
+}
+
+export interface EssentialBudgetBreakdownItem {
+  category_local_id: string;
+  category_name: string;
+  allocated_amount: number;
+  actual_amount: number;
+  difference_amount: number;
+  progress_ratio: number;
+  state: BudgetComparisonState;
 }

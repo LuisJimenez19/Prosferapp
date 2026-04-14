@@ -14,7 +14,7 @@ export function HomeBrandHeader() {
         <View className="h-10 w-10 items-center justify-center rounded-sm bg-secondary">
           <MaterialIcons name="show-chart" size={18} color={colors.accent} />
         </View>
-        <Text className="text-[20px] font-bold tracking-tight text-foreground">
+        <Text className="text-xl font-bold tracking-tight text-foreground">
           ProsferApp
         </Text>
       </View>

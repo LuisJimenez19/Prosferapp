@@ -1,4 +1,5 @@
 export * from '@/src/components/ui/app-alert-dialog';
+export * from '@/src/components/ui/badge';
 export * from '@/src/components/ui/button';
 export * from '@/src/components/ui/card';
 export * from '@/src/components/ui/date-picker-field';
@@ -6,5 +7,6 @@ export * from '@/src/components/ui/empty-state';
 export * from '@/src/components/ui/help-tooltip';
 export * from '@/src/components/ui/input';
 export * from '@/src/components/ui/label';
+export * from '@/src/components/ui/progress';
 export * from '@/src/components/ui/screen';
 export * from '@/src/components/ui/text';

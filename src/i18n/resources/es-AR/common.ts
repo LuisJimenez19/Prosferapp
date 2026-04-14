@@ -2,10 +2,12 @@ const common = {
   actions: {
     addTransaction: "Agregar transaccion",
     back: "Volver",
+    budgets: "Plan mensual",
     cancel: "Cancelar",
     configure: "Configurar",
     confirm: "Confirmar",
     create: "Crear",
+    dashboard: "Dashboard",
     delete: "Eliminar",
     edit: "Editar",
     generate: "Generar",

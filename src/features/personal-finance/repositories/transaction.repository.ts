@@ -273,7 +273,8 @@ async function listRecentTransactionsByOwner(ownerType: string, ownerLocalId: st
       SELECT
         ${TRANSACTION_SELECT_FIELDS},
         w.name AS wallet_name,
-        c.name AS category_name
+        c.name AS category_name,
+        c.budget_role AS category_budget_role
       FROM transactions t
       INNER JOIN wallets w ON w.local_id = t.wallet_local_id
       LEFT JOIN categories c ON c.local_id = t.category_local_id
@@ -284,6 +285,26 @@ async function listRecentTransactionsByOwner(ownerType: string, ownerLocalId: st
       LIMIT ?
     `,
     [ownerType, ownerLocalId, limit],
+  );
+}
+
+async function listTransactionsByOwner(ownerType: string, ownerLocalId: string) {
+  return getAll<TransactionListItem>(
+    `
+      SELECT
+        ${TRANSACTION_SELECT_FIELDS},
+        w.name AS wallet_name,
+        c.name AS category_name,
+        c.budget_role AS category_budget_role
+      FROM transactions t
+      INNER JOIN wallets w ON w.local_id = t.wallet_local_id
+      LEFT JOIN categories c ON c.local_id = t.category_local_id
+      WHERE t.owner_type = ?
+        AND t.owner_local_id = ?
+        AND t.deleted_at IS NULL
+      ORDER BY t.occurred_at DESC, t.created_at DESC
+    `,
+    [ownerType, ownerLocalId],
   );
 }
 
@@ -522,5 +543,6 @@ export const transactionRepository = {
   createTransaction,
   getTransactionByLocalId,
   listRecentTransactionsByOwner,
+  listTransactionsByOwner,
   listTransactionsByOwnerAndDateRange,
 };

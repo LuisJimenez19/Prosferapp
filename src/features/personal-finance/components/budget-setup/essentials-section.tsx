@@ -42,43 +42,28 @@ function ManageEssentialCard({
       <View className="flex-row items-start justify-between gap-3">
         <View className="flex-1 gap-1">
           <Text weight="semibold">{draft.category_name}</Text>
-          <Text variant="muted">
-            {draft.is_system ? "Predefinido" : "Personalizado"}
-          </Text>
+          <Text variant="muted">Esencial del plan</Text>
         </View>
-        {draft.is_system ? (
-          <View className="rounded-full bg-primary/10 px-3 py-1">
-            <Text className="text-[11px] font-bold uppercase tracking-[0.8px] text-primary">
-              Base
-            </Text>
-          </View>
-        ) : null}
       </View>
 
-      {!draft.is_system ? (
-        <View className="flex-row flex-wrap gap-3">
-          <Button
-            size="sm"
-            variant="outline"
-            className="rounded-xxs"
-            onPress={onEdit}
-          >
-            Editar
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            className="rounded-xxs"
-            onPress={onDelete}
-          >
-            Quitar de esenciales
-          </Button>
-        </View>
-      ) : (
-        <Text variant="muted">
-          Esta categoria viene con la app y no se puede renombrar ni quitar.
-        </Text>
-      )}
+      <View className="flex-row flex-wrap gap-3">
+        <Button
+          size="sm"
+          variant="outline"
+          className="rounded-xxs"
+          onPress={onEdit}
+        >
+          Editar
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          className="rounded-xxs"
+          onPress={onDelete}
+        >
+          Quitar de esenciales
+        </Button>
+      </View>
     </View>
   );
 }
@@ -296,16 +281,7 @@ export function EssentialsSection({
               className="flex-row items-center gap-3 rounded-lg bg-secondary px-4 py-3"
             >
               <View className="flex-1 gap-1">
-                <View className="flex-row items-center gap-2">
-                  <Text weight="semibold">{draft.category_name}</Text>
-                  {draft.is_system ? (
-                    <View className="rounded-full bg-primary/10 px-2 py-0.5">
-                      <Text className="text-[10px] font-bold uppercase tracking-[0.8px] text-primary">
-                        Base
-                      </Text>
-                    </View>
-                  ) : null}
-                </View>
+                <Text weight="semibold">{draft.category_name}</Text>
                 <Text variant="muted">
                   {t("budget:sections.essentials.amountLabel")}
                 </Text>

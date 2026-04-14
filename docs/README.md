@@ -2,7 +2,7 @@
 title: Mapa de documentacion
 status: active
 owner: product-engineering
-last_updated: 2026-04-09
+last_updated: 2026-04-14
 tags: [docs, roadmap, architecture, conventions, rag]
 summary: Explica como se organiza la documentacion viva de ProsferApp y cual es el orden recomendado para leerla y mantenerla.
 ---
@@ -37,6 +37,9 @@ La documentacion debe ayudarnos a distinguir con claridad:
 8. [`rag-readiness.md`](./rag-readiness.md)
 9. [`plans.md`](./plans.md)
 10. [`agent-prompt.md`](./agent-prompt.md)
+11. [`mvp1-activity-capture-plan-tracking.md`](./mvp1-activity-capture-plan-tracking.md)
+12. [`backend-readiness-personal-finance.md`](./backend-readiness-personal-finance.md)
+13. [`ux/mvp1-budget-monitoring-dashboard.md`](./ux/mvp1-budget-monitoring-dashboard.md)
 
 ## Mapa de archivos
 
@@ -50,9 +53,12 @@ La documentacion debe ayudarnos a distinguir con claridad:
 - [`rag-readiness.md`](./rag-readiness.md): reglas para que la documentacion sea facil de indexar y consultar con RAG.
 - [`plans.md`](./plans.md): foco de trabajo actual y siguientes entregables.
 - [`agent-prompt.md`](./agent-prompt.md): instrucciones operativas para agentes de IA que trabajen sobre este repo.
+- [`mvp1-activity-capture-plan-tracking.md`](./mvp1-activity-capture-plan-tracking.md): fija el enfoque del MVP 1 alrededor de captura de actividad, comparacion plan vs ejecucion, avisos utiles y futura captura conversacional.
+- [`backend-readiness-personal-finance.md`](./backend-readiness-personal-finance.md): baja ese enfoque a criterios tecnicos y de dominio para empezar a pensar backend, sync y futuras integraciones sin romper el modelo offline-first.
 - [`adr/README.md`](./adr/README.md): como registrar decisiones tecnicas importantes.
 - [`ux/README.md`](./ux/README.md): espacio reservado para futura documentacion de UX/UI.
 - [`ux/mvp1-finance-ui.md`](./ux/mvp1-finance-ui.md): reglas visuales y de flujo para la UI del MVP 1 inspirada en Figma y optimizada para entender el plan mensual y registrar movimientos con pocos pasos.
+- [`ux/mvp1-budget-monitoring-dashboard.md`](./ux/mvp1-budget-monitoring-dashboard.md): documenta como home y dashboard leen el estado del mes, que muestran los graficos y cuales son los flujos clave del seguimiento del plan.
 
 ## Reglas de mantenimiento
 

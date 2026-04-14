@@ -104,6 +104,8 @@ export default function RootLayout() {
           name="settings-reset"
           options={{ title: "Configuracion" }}
         />
+        <Stack.Screen name="dashboard" options={{ headerShown: false }} />
+        <Stack.Screen name="transactions" options={{ headerShown: false }} />
         <Stack.Screen name="wallets" options={{ headerShown: false }} />
       </Stack>
       <StatusBar style={resolvedColorScheme === "dark" ? "light" : "dark"} />

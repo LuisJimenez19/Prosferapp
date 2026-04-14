@@ -8,7 +8,7 @@ import { useColorScheme } from "@/hooks/use-color-scheme";
 import { getThemeColors, withAlpha } from "@/src/lib/theme";
 
 export default function TabLayout() {
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation(["budget", "common"]);
   const colorScheme = useColorScheme();
   const colors = getThemeColors(colorScheme);
   const insets = useSafeAreaInsets();
@@ -60,7 +60,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="budgets"
         options={{
-          title: t("common:actions.budgets"),
+          title: t("budget:screen.title", {
+            defaultValue: "Plan mensual",
+          }),
           tabBarIcon: ({ color }) => (
             <MaterialIcons size={22} name="bar-chart" color={color} />
           ),

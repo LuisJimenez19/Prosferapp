@@ -43,7 +43,7 @@ function FeaturedWalletCard({ wallet }: { wallet: Wallet }) {
               />
             </View>
             <View className="flex-1 gap-1">
-              <Text className="text-[20px] font-bold leading-7 text-white">
+              <Text className="text-xl font-bold leading-7 text-white">
                 {wallet.name}
               </Text>
               <Text className="text-sm text-white/80">
@@ -54,7 +54,7 @@ function FeaturedWalletCard({ wallet }: { wallet: Wallet }) {
 
           {wallet.is_default ? (
             <View className="rounded-full bg-white/15 px-3 py-1">
-              <Text className="text-[11px] font-bold uppercase tracking-[1px] text-white">
+              <Text className="text-xs font-bold uppercase tracking-wide text-white">
                 {t("home:wallet.defaultBadge")}
               </Text>
             </View>
@@ -65,14 +65,14 @@ function FeaturedWalletCard({ wallet }: { wallet: Wallet }) {
           <Text className="text-sm text-white/80">
             {t("home:wallet.availableLabel")}
           </Text>
-          <Text className="text-[40px] font-extrabold leading-[44px] tracking-[-1.6px] text-white">
+          <Text className="text-4xl font-extrabold leading-tight tracking-tight text-white">
             {formatCurrency(wallet.current_balance, wallet.currency_code)}
           </Text>
         </View>
 
         <View className="flex-row gap-3">
           <View className="rounded-xxs border border-white/15 bg-white/10 px-4 py-2">
-            <Text className="text-xs font-semibold uppercase tracking-[1px] text-white/75">
+            <Text className="text-xs font-semibold uppercase tracking-wide text-white/75">
               {t("home:wallet.openingLabel")}
             </Text>
             <Text className="mt-1 text-sm font-semibold text-white">
@@ -80,7 +80,7 @@ function FeaturedWalletCard({ wallet }: { wallet: Wallet }) {
             </Text>
           </View>
           <View className="rounded-xxs border border-white/15 bg-white/10 px-4 py-2">
-            <Text className="text-xs font-semibold uppercase tracking-[1px] text-white/75">
+            <Text className="text-xs font-semibold uppercase tracking-wide text-white/75">
               {wallet.currency_code}
             </Text>
             <Text className="mt-1 text-sm font-semibold text-white">
@@ -117,14 +117,14 @@ function CompactWalletCard({ wallet }: { wallet: Wallet }) {
           </View>
 
           <View className="flex-1 gap-1">
-            <Text className="text-[18px] font-bold leading-7 text-foreground">
+            <Text className="text-lg font-bold leading-7 text-foreground">
               {wallet.name}
             </Text>
             <Text variant="muted">{t(`types.${wallet.wallet_type}`)}</Text>
           </View>
         </View>
 
-        <Text className="text-[18px] font-bold leading-7 text-foreground">
+        <Text className="text-lg font-bold leading-7 text-foreground">
           {formatCurrency(wallet.current_balance, wallet.currency_code)}
         </Text>
       </View>
@@ -145,7 +145,7 @@ export function HomeWalletsSection({
     <View className="gap-4">
       <View className="flex-row items-end justify-between gap-3">
         <View className="flex-1 gap-1">
-          <Text className="text-[24px] font-bold tracking-[-0.6px] text-foreground">
+          <Text className="text-2xl font-bold tracking-tight text-foreground">
             {t("home:sections.wallets.title")}
           </Text>
           <Text variant="muted">{t("home:sections.wallets.subtitle")}</Text>

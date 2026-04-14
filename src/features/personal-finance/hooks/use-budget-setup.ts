@@ -356,10 +356,6 @@ export function useBudgetSetup(isFocused: boolean) {
           return;
         }
 
-        if (currentDraft.is_system) {
-          throw new Error("Los esenciales predefinidos no se pueden eliminar.");
-        }
-
         const updatedCategory = await categoryRepository.updateCategory(
           categoryLocalId,
           {
@@ -399,10 +395,6 @@ export function useBudgetSetup(isFocused: boolean) {
 
         if (!currentDraft) {
           return;
-        }
-
-        if (currentDraft.is_system) {
-          throw new Error("Los esenciales predefinidos no se pueden editar.");
         }
 
         const updatedCategory = await categoryRepository.updateCategory(

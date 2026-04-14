@@ -1,50 +1,48 @@
-# Welcome to your Expo app 👋
+# ProsferApp
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+ProsferApp es una app mobile offline-first para presupuesto personal, seguimiento del plan mensual y registro guiado de movimientos.
 
-## Get started
+## Stack principal
 
-1. Install dependencies
+- Expo 54
+- React Native 0.81
+- Expo Router
+- NativeWind
+- SQLite local
+- i18next
+- Victory Native para visualizaciones del dashboard
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Scripts utiles
 
 ```bash
-npm run reset-project
+npm install
+npm run start
+npm run start:clear
+npm run android
+npm run android:clear
+npm run ios
+npm run ios:clear
+npm run lint
+npx tsc --noEmit
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Estructura
 
-## Learn more
+- `app/`: rutas con Expo Router
+- `src/features/personal-finance/`: dominio principal del MVP 1
+- `src/components/ui/`: catalogo de componentes reutilizables
+- `src/database/`: schema, migraciones y acceso local
+- `docs/`: documentacion viva del producto, arquitectura y UX
 
-To learn more about developing your project with Expo, look at the following resources:
+## Documentacion recomendada
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- [Mapa de documentacion](./docs/README.md)
+- [Modelo de dominio MVP 1 presupuesto personal](./docs/mvp1-budget-domain.md)
+- [MVP 1 captura de actividad y seguimiento del plan](./docs/mvp1-activity-capture-plan-tracking.md)
+- [Backend readiness para finanzas personales](./docs/backend-readiness-personal-finance.md)
+- [UI financiera MVP 1](./docs/ux/mvp1-finance-ui.md)
+- [Dashboard y monitoreo del plan mensual](./docs/ux/mvp1-budget-monitoring-dashboard.md)
 
-## Join the community
+## Nota operativa
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Si agregas o cambias dependencias de bundling, charts o librerias nativas, usa `npm run start:clear` o `npm run android:clear` para limpiar la cache de Metro antes de diagnosticar errores de resolucion.

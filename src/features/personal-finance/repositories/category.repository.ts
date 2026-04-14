@@ -347,10 +347,10 @@ async function getCategoryDeleteSummary(localId: string) {
 
 async function softDeleteCategory(localId: string) {
   const existingCategory = await getFirst<
-    Pick<CategoryRecord, 'local_id' | 'version' | 'is_system'>
+    Pick<CategoryRecord, 'local_id' | 'version' | 'is_essential' | 'is_system'>
   >(
     `
-      SELECT local_id, version, is_system
+      SELECT local_id, version, is_system, is_essential
       FROM categories
       WHERE local_id = ?
         AND deleted_at IS NULL
@@ -363,7 +363,10 @@ async function softDeleteCategory(localId: string) {
     return false;
   }
 
-  if (Boolean(existingCategory.is_system)) {
+  if (
+    Boolean(existingCategory.is_system) &&
+    !Boolean(existingCategory.is_essential)
+  ) {
     throw new Error('Las categorias predefinidas no se pueden eliminar.');
   }
 

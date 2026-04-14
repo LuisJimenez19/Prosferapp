@@ -1,8 +1,8 @@
 ---
 title: Documentacion UX UI
-status: planned
+status: active
 owner: product-engineering
-last_updated: 2026-04-09
+last_updated: 2026-04-13
 tags: [ux, ui, product, design]
 summary: Reserva el espacio donde se documentaran flujos, criterios visuales y decisiones de experiencia cuando se definan.
 ---
@@ -25,6 +25,7 @@ Esta carpeta queda preparada para recibir la documentacion de experiencia y dise
 ## Documentos actuales
 
 - [`mvp1-finance-ui.md`](./mvp1-finance-ui.md): define la direccion visual y las reglas UX del MVP 1 para plan mensual, seguimiento, billeteras y carga de transacciones.
+- [`mvp1-budget-monitoring-dashboard.md`](./mvp1-budget-monitoring-dashboard.md): explica como se monitorea el plan mensual entre home y dashboard, como se leen los graficos y que flujos soporta el seguimiento guiado.
 
 ## Regla
 

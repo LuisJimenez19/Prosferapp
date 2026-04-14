@@ -37,7 +37,7 @@ export default function HomeScreen() {
         <Text variant="caption" className="text-primary">
           {t("screen.eyebrow")}
         </Text>
-        <Text className="text-3xl font-extrabold leading-[40px] tracking-[-1px] text-foreground">
+        <Text className="text-3xl font-extrabold leading-10 tracking-tight text-foreground">
           {t("screen.title")}
         </Text>
         <Text variant="muted">{t("screen.subtitle")}</Text>
@@ -77,6 +77,7 @@ export default function HomeScreen() {
             onSetupPlan={() =>
               router.push({ pathname: "/budgets", params: { tab: "plan" } })
             }
+            onViewDashboard={() => router.push("/dashboard")}
           />
 
           <HomeWalletsSection
@@ -92,6 +93,7 @@ export default function HomeScreen() {
             onAddTransaction={() =>
               router.push({ pathname: "/budgets", params: { tab: "manual" } })
             }
+            onViewAll={() => router.push("/transactions")}
           />
         </>
       ) : null}

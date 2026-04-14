@@ -5,6 +5,46 @@ const transactions = {
     income: "Ingreso",
     expense: "Gasto",
   },
+  screen: {
+    eyebrow: "Historial completo",
+    title: "Todos tus movimientos",
+    subtitle:
+      "Revisa ingresos y gastos en un solo lugar para entender mejor como se esta ejecutando tu plan.",
+    loading: "Cargando movimientos...",
+    listTitle: "Historial reciente",
+    emptyTitle: "Todavia no hay movimientos registrados",
+    emptyDescription:
+      "Cuando registres tu primer ingreso o gasto, aparecera aqui para que puedas revisarlo completo.",
+    filteredEmptyTitle: "No hay movimientos con estos filtros",
+    filteredEmptyDescription:
+      "Prueba cambiando el tipo, el alcance o la billetera para ampliar el historial visible.",
+    overview: {
+      title: "Lectura rapida",
+      count: "Movimientos",
+      income: "Ingresos",
+      expense: "Gastos",
+    },
+    filters: {
+      title: "Filtros",
+      type: "Tipo",
+      scope: "Alcance",
+      wallet: "Billetera",
+      all: "Todo",
+      income: "Ingresos",
+      expense: "Gastos",
+      essential: "Esenciales",
+      debt: "Deudas",
+      goal: "Metas",
+      flexible: "Flexible",
+    },
+    results: {
+      title: "{{count}} movimientos visibles",
+      description: "Filtrando {{visible}} de {{total}} movimientos registrados.",
+    },
+    errors: {
+      title: "No pudimos cargar tus movimientos",
+    },
+  },
   createScreen: {
     title: "Registrar movimiento",
     subtitle:

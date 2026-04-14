@@ -4,6 +4,7 @@ import { initReactI18next } from "react-i18next";
 import { DEFAULT_LOCALE } from "@/src/i18n/config";
 import budget from "@/src/i18n/resources/es-AR/budget";
 import common from "@/src/i18n/resources/es-AR/common";
+import dashboard from "@/src/i18n/resources/es-AR/dashboard";
 import home from "@/src/i18n/resources/es-AR/home";
 import settings from "@/src/i18n/resources/es-AR/settings";
 import transactions from "@/src/i18n/resources/es-AR/transactions";
@@ -13,6 +14,7 @@ const resources = {
   "es-AR": {
     budget,
     common,
+    dashboard,
     home,
     settings,
     transactions,
@@ -27,7 +29,15 @@ if (!i18n.isInitialized) {
     lng: DEFAULT_LOCALE,
     fallbackLng: DEFAULT_LOCALE,
     defaultNS: "common",
-    ns: ["common", "home", "wallets", "transactions", "settings", "budget"],
+    ns: [
+      "common",
+      "home",
+      "wallets",
+      "transactions",
+      "settings",
+      "budget",
+      "dashboard",
+    ],
     resources,
     interpolation: {
       escapeValue: false,

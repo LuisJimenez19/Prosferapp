@@ -1,50 +1,51 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Stack, useRouter } from "expo-router";
-import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
-  ActivityIndicator,
-  Alert,
-  Pressable,
-  ScrollView,
-  TextInput,
-  View,
+    ActivityIndicator,
+    Alert,
+    Pressable,
+    ScrollView,
+    TextInput,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useTranslation } from "react-i18next";
 
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import {
-  AppAlertDialog,
-  Button,
-  Card,
-  CardContent,
-  DatePickerField,
-  EmptyState,
-  Input,
-  Label,
-  Text,
+    AppAlertDialog,
+    Button,
+    Card,
+    CardContent,
+    DatePickerField,
+    EmptyState,
+    Input,
+    Label,
+    Text,
 } from "@/src/components/ui";
-import {
-  getCategoriesForTransactionType,
-  validateTransactionForm,
-} from "@/src/features/personal-finance/services/transaction-form";
 import { categoryRepository } from "@/src/features/personal-finance/repositories/category.repository";
 import { getPersonalContext } from "@/src/features/personal-finance/repositories/personal-context.repository";
 import { transactionRepository } from "@/src/features/personal-finance/repositories/transaction.repository";
 import { walletRepository } from "@/src/features/personal-finance/repositories/wallet.repository";
-import { getCategoryVisuals, getWalletVisuals } from "@/src/features/personal-finance/services/presentation";
+import {
+    getCategoryVisuals,
+    getWalletVisuals,
+} from "@/src/features/personal-finance/services/presentation";
+import {
+    getCategoriesForTransactionType,
+    validateTransactionForm,
+} from "@/src/features/personal-finance/services/transaction-form";
 import type { Category } from "@/src/features/personal-finance/types/category";
-import type {
-  TransactionKind,
-} from "@/src/features/personal-finance/types/transaction";
+import type { TransactionKind } from "@/src/features/personal-finance/types/transaction";
 import type { Wallet } from "@/src/features/personal-finance/types/wallet";
 import { DEFAULT_CURRENCY_CODE } from "@/src/i18n/config";
 import {
-  dateInputToIsoString,
-  dateInputValueToDate,
-  formatDateLabel,
-  toDateInputValue,
+    dateInputToIsoString,
+    dateInputValueToDate,
+    formatDateLabel,
+    toDateInputValue,
 } from "@/src/lib/dates";
 import { formatCurrency, parseMoneyInput } from "@/src/lib/money";
 import { getThemeColors } from "@/src/lib/theme";
@@ -148,7 +149,7 @@ function DetailLabelRow({
         <Text className="text-[11px] font-bold uppercase tracking-[0.8px] text-muted-foreground">
           {label}
         </Text>
-        <Text className="text-[16px] font-semibold text-foreground">{value}</Text>
+        <Text className="text-lg font-semibold text-foreground">{value}</Text>
       </View>
     </View>
   );
@@ -189,7 +190,7 @@ function ManageCategoryCard({
               color={visuals.iconColor}
             />
           </View>
-          <Text className="flex-1 text-[16px] font-semibold text-foreground">
+          <Text className="flex-1 text-lg font-semibold text-foreground">
             {category.name}
           </Text>
         </View>
@@ -458,7 +459,10 @@ export default function CreateTransactionModalScreen({
           name: trimmedName,
         });
 
-        setCategories((currentCategories) => [...currentCategories, createdCategory]);
+        setCategories((currentCategories) => [
+          ...currentCategories,
+          createdCategory,
+        ]);
         setSelectedCategoryLocalId(createdCategory.local_id);
       }
 
@@ -556,14 +560,20 @@ export default function CreateTransactionModalScreen({
         },
         {
           amount: {
-            invalidFormat: t("transactions:createScreen.validation.amountInvalid"),
-            nonPositive: t("transactions:createScreen.validation.amountPositive"),
+            invalidFormat: t(
+              "transactions:createScreen.validation.amountInvalid",
+            ),
+            nonPositive: t(
+              "transactions:createScreen.validation.amountPositive",
+            ),
             required: t("transactions:createScreen.validation.amountRequired"),
           },
           categoryRequired: t(
             "transactions:createScreen.validation.categoryRequired",
           ),
-          walletRequired: t("transactions:createScreen.validation.walletRequired"),
+          walletRequired: t(
+            "transactions:createScreen.validation.walletRequired",
+          ),
         },
       );
     } catch (validationError) {
@@ -620,7 +630,10 @@ export default function CreateTransactionModalScreen({
           ? saveError.message
           : t("transactions:createScreen.errors.saveFailed");
       setError(message);
-      Alert.alert(t("transactions:createScreen.errors.saveFailedTitle"), message);
+      Alert.alert(
+        t("transactions:createScreen.errors.saveFailedTitle"),
+        message,
+      );
     } finally {
       setIsSaving(false);
     }
@@ -737,7 +750,9 @@ export default function CreateTransactionModalScreen({
                       variant="ghost"
                       className="rounded-xxs"
                       onPress={() => {
-                        setIsManagingCategories((currentValue) => !currentValue);
+                        setIsManagingCategories(
+                          (currentValue) => !currentValue,
+                        );
                         setCategoryNameInput("");
                         setEditingCategoryId(null);
                       }}
@@ -850,9 +865,11 @@ export default function CreateTransactionModalScreen({
                               }
                               onEdit={() => startCategoryEdit(category)}
                               onDelete={() => {
-                                handleDeleteCategoryPress(category).catch(() => {
-                                  // Errors are handled inside handleDeleteCategoryPress.
-                                });
+                                handleDeleteCategoryPress(category).catch(
+                                  () => {
+                                    // Errors are handled inside handleDeleteCategoryPress.
+                                  },
+                                );
                               }}
                             />
                           ))}
@@ -862,7 +879,9 @@ export default function CreateTransactionModalScreen({
                   ) : categoriesForType.length === 0 ? (
                     <EmptyState
                       compact
-                      title={t("transactions:createScreen.errors.noCategoriesTitle")}
+                      title={t(
+                        "transactions:createScreen.errors.noCategoriesTitle",
+                      )}
                       description={t(
                         "transactions:createScreen.errors.noCategoriesDescription",
                         {
@@ -917,7 +936,9 @@ export default function CreateTransactionModalScreen({
                           "account-balance-wallet"
                         }
                         size={18}
-                        color={selectedWalletVisuals?.iconColor ?? colors.accent}
+                        color={
+                          selectedWalletVisuals?.iconColor ?? colors.accent
+                        }
                       />
                     }
                     label={t("transactions:createScreen.sections.wallet.title")}
@@ -940,7 +961,9 @@ export default function CreateTransactionModalScreen({
                             size="sm"
                             variant={isSelected ? "default" : "outline"}
                             className="rounded-lg"
-                            onPress={() => setSelectedWalletLocalId(wallet.local_id)}
+                            onPress={() =>
+                              setSelectedWalletLocalId(wallet.local_id)
+                            }
                           >
                             {wallet.name}
                           </Button>
@@ -1012,7 +1035,9 @@ export default function CreateTransactionModalScreen({
                     });
                   }}
                 >
-                  {t("transactions:createScreen.sections.submit.actionAndContinue")}
+                  {t(
+                    "transactions:createScreen.sections.submit.actionAndContinue",
+                  )}
                 </Button>
 
                 <Button
@@ -1105,7 +1130,9 @@ export default function CreateTransactionModalScreen({
                   {wallets.length === 0 ? (
                     <EmptyState
                       compact
-                      title={t("transactions:createScreen.errors.noWalletsTitle")}
+                      title={t(
+                        "transactions:createScreen.errors.noWalletsTitle",
+                      )}
                       description={t(
                         "transactions:createScreen.errors.noWalletsDescription",
                       )}
@@ -1120,7 +1147,9 @@ export default function CreateTransactionModalScreen({
                       <View className="flex-row items-end justify-between gap-3">
                         <View className="flex-1 gap-1">
                           <Text className="text-[20px] font-bold leading-7 text-foreground">
-                            {t("transactions:createScreen.sections.category.title")}
+                            {t(
+                              "transactions:createScreen.sections.category.title",
+                            )}
                           </Text>
                           <Text variant="muted">
                             {t(
@@ -1136,7 +1165,9 @@ export default function CreateTransactionModalScreen({
                           variant="ghost"
                           className="rounded-xxs"
                           onPress={() => {
-                            setIsManagingCategories((currentValue) => !currentValue);
+                            setIsManagingCategories(
+                              (currentValue) => !currentValue,
+                            );
                             setCategoryNameInput("");
                             setEditingCategoryId(null);
                           }}
@@ -1195,7 +1226,8 @@ export default function CreateTransactionModalScreen({
                                   )}
                                 </Button>
                               </>
-                            ) : categoryNameInput.trim() && !exactCategoryMatch ? (
+                            ) : categoryNameInput.trim() &&
+                              !exactCategoryMatch ? (
                               <Button
                                 className="rounded-lg"
                                 onPress={() => {
@@ -1242,16 +1274,21 @@ export default function CreateTransactionModalScreen({
                                   key={category.local_id}
                                   category={category}
                                   isSelected={
-                                    selectedCategoryLocalId === category.local_id
+                                    selectedCategoryLocalId ===
+                                    category.local_id
                                   }
                                   onSelect={() =>
-                                    setSelectedCategoryLocalId(category.local_id)
+                                    setSelectedCategoryLocalId(
+                                      category.local_id,
+                                    )
                                   }
                                   onEdit={() => startCategoryEdit(category)}
                                   onDelete={() => {
-                                    handleDeleteCategoryPress(category).catch(() => {
-                                      // Errors are handled inside handleDeleteCategoryPress.
-                                    });
+                                    handleDeleteCategoryPress(category).catch(
+                                      () => {
+                                        // Errors are handled inside handleDeleteCategoryPress.
+                                      },
+                                    );
                                   }}
                                 />
                               ))}
@@ -1261,7 +1298,9 @@ export default function CreateTransactionModalScreen({
                       ) : categoriesForType.length === 0 ? (
                         <EmptyState
                           compact
-                          title={t("transactions:createScreen.errors.noCategoriesTitle")}
+                          title={t(
+                            "transactions:createScreen.errors.noCategoriesTitle",
+                          )}
                           description={t(
                             "transactions:createScreen.errors.noCategoriesDescription",
                             {
@@ -1271,7 +1310,9 @@ export default function CreateTransactionModalScreen({
                             },
                           )}
                           action={
-                            <Button onPress={() => setIsManagingCategories(true)}>
+                            <Button
+                              onPress={() => setIsManagingCategories(true)}
+                            >
                               {t(
                                 "transactions:createScreen.sections.category.toggleManage",
                               )}
@@ -1316,10 +1357,14 @@ export default function CreateTransactionModalScreen({
                               "account-balance-wallet"
                             }
                             size={18}
-                            color={selectedWalletVisuals?.iconColor ?? colors.accent}
+                            color={
+                              selectedWalletVisuals?.iconColor ?? colors.accent
+                            }
                           />
                         }
-                        label={t("transactions:createScreen.sections.wallet.title")}
+                        label={t(
+                          "transactions:createScreen.sections.wallet.title",
+                        )}
                         value={selectedWallet?.name ?? "-"}
                       />
 
@@ -1339,7 +1384,9 @@ export default function CreateTransactionModalScreen({
                                 size="sm"
                                 variant={isSelected ? "default" : "outline"}
                                 className="rounded-lg"
-                                onPress={() => setSelectedWalletLocalId(wallet.local_id)}
+                                onPress={() =>
+                                  setSelectedWalletLocalId(wallet.local_id)
+                                }
                               >
                                 {wallet.name}
                               </Button>
@@ -1356,7 +1403,9 @@ export default function CreateTransactionModalScreen({
                             color={colors.mutedForeground}
                           />
                         }
-                        label={t("transactions:createScreen.sections.date.title")}
+                        label={t(
+                          "transactions:createScreen.sections.date.title",
+                        )}
                         value={formatDateLabel(dateValue)}
                       />
 
@@ -1414,7 +1463,9 @@ export default function CreateTransactionModalScreen({
                     });
                   }}
                 >
-                  {t("transactions:createScreen.sections.submit.actionAndContinue")}
+                  {t(
+                    "transactions:createScreen.sections.submit.actionAndContinue",
+                  )}
                 </Button>
 
                 <Button
@@ -1474,7 +1525,10 @@ export default function CreateTransactionModalScreen({
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right", "bottom"]}>
+    <SafeAreaView
+      style={{ flex: 1 }}
+      edges={["top", "left", "right", "bottom"]}
+    >
       <Stack.Screen options={{ headerShown: false }} />
 
       <View className="flex-1 bg-background">
@@ -1485,7 +1539,11 @@ export default function CreateTransactionModalScreen({
                 className="h-10 w-10 items-center justify-center rounded-sm bg-secondary"
                 onPress={() => router.back()}
               >
-                <MaterialIcons name="close" size={18} color={colors.mutedForeground} />
+                <MaterialIcons
+                  name="close"
+                  size={18}
+                  color={colors.mutedForeground}
+                />
               </Pressable>
               <Text className="text-[20px] font-bold tracking-tight text-foreground">
                 {t("transactions:createScreen.title")}
